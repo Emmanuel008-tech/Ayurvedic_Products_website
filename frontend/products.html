@@ -1,0 +1,112 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Our Products - Handcrafted Ayurvedic Range | Vanam Ayurveda{% endblock %}
+
+{% block content %}
+
+<!-- Page Hero Banner -->
+<section class="page-hero">
+  <div class="container">
+    <nav class="breadcrumbs" aria-label="Breadcrumb">
+      <a href="{% url 'backend:home' %}">Home</a>
+      <span>/</span>
+      <span>Our Products</span>
+    </nav>
+    <span class="eyebrow" style="color: var(--color-accent);">Holistic Formulations</span>
+    <h1>Authentic Ayurvedic Personal Care Range</h1>
+    <p>Hand-blended remedies crafted from wild-harvested herbs, cold-pressed seed oils, and natural flora.</p>
+  </div>
+</section>
+
+<!-- Products Catalog Section -->
+<section class="catalog-section">
+  <div class="container">
+    
+    <!-- Category Filter Bar -->
+    <div class="filter-bar">
+      <span class="filter-label">Filter Category:</span>
+      <a href="{% url 'backend:products' %}" class="filter-btn {% if not selected_category %}active{% endif %}">
+        All Products
+      </a>
+      {% for cat_key, cat_name in categories %}
+        <a href="{% url 'backend:products' %}?category={{ cat_key }}" class="filter-btn {% if selected_category == cat_key %}active{% endif %}">
+          {{ cat_name }}
+        </a>
+      {% endfor %}
+    </div>
+
+    <!-- Product Grid -->
+    <div class="product-grid">
+      {% for product in products %}
+        <article class="product-card">
+          <div class="product-image-container">
+            {% if product.image %}
+              <img src="{{ product.image.url }}" alt="{{ product.name }}" class="product-image" loading="lazy">
+            {% else %}
+              <div style="display:flex; align-items:center; justify-content:center; height:100%; color:#888;">No Image Available</div>
+            {% endif %}
+            <span class="product-category-tag">{{ product.get_category_display }}</span>
+          </div>
+
+          <div class="product-body">
+            <h3 class="product-title">{{ product.name }}</h3>
+            <p class="product-description">{{ product.description }}</p>
+            
+            <div class="product-price-row">
+              <span class="product-price-label">Price</span>
+              <span class="product-price">₹ {{ product.price }}</span>
+            </div>
+
+            <div class="product-actions">
+              <a href="{% url 'backend:contact' %}?product_id={{ product.id }}" class="btn btn-outline btn-sm">
+                <span>Send Enquiry Form</span>
+              </a>
+              
+              <a href="{{ product.get_whatsapp_url }}" target="_blank" class="btn btn-whatsapp btn-sm">
+                <svg class="whatsapp-svg-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+                  <path d="M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.4 17.7 68.9 27 106.1 27h.1c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157zm-157 341.6c-33.2 0-65.7-8.9-94-25.7l-6.7-4-69.8 18.3L72 359.2l-4.4-7c-18.5-29.4-28.2-63.3-28.2-98.2 0-101.7 82.8-184.5 184.6-184.5 49.3 0 95.6 19.2 130.4 54.1 34.8 34.9 56.2 81.2 56.1 130.5 0 101.8-84.9 184.6-186.6 184.6zm101.2-138.2c-5.5-2.8-32.8-16.2-37.9-18-5.1-1.9-8.8-2.8-12.5 2.8-3.7 5.6-14.3 18-17.6 21.8-3.2 3.7-6.5 4.2-12 1.4-32.6-16.3-54-29.1-75.5-66-5.7-9.8 5.7-9.1 16.3-30.3 1.8-3.7.9-6.9-.5-9.7-1.4-2.8-12.5-30.1-17.1-41.2-4.5-10.8-9.1-9.3-12.5-9.5-3.2-.2-6.9-.2-10.6-.2-3.7 0-9.7 1.4-14.8 6.9-5.1 5.6-19.4 19-19.4 46.3 0 27.3 19.9 53.7 22.6 57.4 2.8 3.7 39.1 59.7 94.8 83.8 35.2 15.2 49 16.5 66.6 13.9 10.7-1.6 32.8-13.4 37.4-26.4 4.6-13 4.6-24.1 3.2-26.4-1.3-2.5-5-3.9-10.5-6.6z"/>
+                </svg>
+                <span>Enquire on WhatsApp</span>
+              </a>
+            </div>
+          </div>
+        </article>
+      {% empty %}
+        <div style="grid-column: 1 / -1; padding: 4rem 2rem; text-align: left; background: #fff; border-radius: 12px; border: 1px solid var(--color-border);">
+          <h3>No formulations found in this category</h3>
+          <p class="text-muted">Please select another category or view all products.</p>
+          <a href="{% url 'backend:products' %}" class="btn btn-primary btn-sm" style="margin-top: 1rem;">
+            <span>Show All Products</span>
+          </a>
+        </div>
+      {% endfor %}
+    </div>
+
+  </div>
+</section>
+
+<!-- Bottom Reassurance Banner -->
+<section style="background: var(--color-bg-alt); padding: 3.5rem 0; border-top: 1px solid var(--color-border);">
+  <div class="container">
+    <div style="display: flex; justify-content: space-between; align-items: center; gap: 2rem; flex-wrap: wrap;">
+      <div>
+        <h3 style="margin-bottom: 0.5rem;">Custom Formulations & Consultations</h3>
+        <p class="text-muted" style="margin-bottom: 0;">Looking for tailored herbal remedies or bulk personal-care orders?</p>
+      </div>
+      <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+        <a href="{% url 'backend:contact' %}" class="btn btn-primary btn-sm">
+          <span>Contact Wellness Desk</span>
+        </a>
+        <a href="https://wa.me/919778256391?text=Namaste%20Vanam%20Ayurveda!%20I%20have%20an%20enquiry%20regarding%20bulk/custom%20orders." target="_blank" class="btn btn-whatsapp btn-sm">
+          <svg class="whatsapp-svg-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+            <path d="M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.4 17.7 68.9 27 106.1 27h.1c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157zm-157 341.6c-33.2 0-65.7-8.9-94-25.7l-6.7-4-69.8 18.3L72 359.2l-4.4-7c-18.5-29.4-28.2-63.3-28.2-98.2 0-101.7 82.8-184.5 184.6-184.5 49.3 0 95.6 19.2 130.4 54.1 34.8 34.9 56.2 81.2 56.1 130.5 0 101.8-84.9 184.6-186.6 184.6zm101.2-138.2c-5.5-2.8-32.8-16.2-37.9-18-5.1-1.9-8.8-2.8-12.5 2.8-3.7 5.6-14.3 18-17.6 21.8-3.2 3.7-6.5 4.2-12 1.4-32.6-16.3-54-29.1-75.5-66-5.7-9.8 5.7-9.1 16.3-30.3 1.8-3.7.9-6.9-.5-9.7-1.4-2.8-12.5-30.1-17.1-41.2-4.5-10.8-9.1-9.3-12.5-9.5-3.2-.2-6.9-.2-10.6-.2-3.7 0-9.7 1.4-14.8 6.9-5.1 5.6-19.4 19-19.4 46.3 0 27.3 19.9 53.7 22.6 57.4 2.8 3.7 39.1 59.7 94.8 83.8 35.2 15.2 49 16.5 66.6 13.9 10.7-1.6 32.8-13.4 37.4-26.4 4.6-13 4.6-24.1 3.2-26.4-1.3-2.5-5-3.9-10.5-6.6z"/>
+          </svg>
+          <span>WhatsApp Us</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}
