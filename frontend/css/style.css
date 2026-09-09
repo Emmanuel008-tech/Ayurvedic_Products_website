@@ -9,6 +9,7 @@
 :root {
   /* Core Brand Tokens (Section 5.8) */
   --color-forest: #1F3327;
+  --color-forest-header: #2B4536; /* Slightly lighter refined botanical forest for header/nav */
   --color-forest-dark: #16261C;
   --color-sage: #8FA680;
   --color-turmeric: #C97F00;
@@ -201,13 +202,13 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
   position: sticky;
   top: 0;
   z-index: 1000;
-  background-color: var(--color-forest);
+  background-color: var(--color-forest-header);
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   transition: box-shadow 0.25s ease, background-color 0.25s ease;
 }
 
 .site-header.scrolled {
-  background-color: var(--color-forest);
+  background-color: var(--color-forest-header);
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
 }
 
@@ -1408,7 +1409,7 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
     top: 64px;
     left: 0;
     width: 100%;
-    background-color: var(--color-forest);
+    background-color: var(--color-forest-header);
     flex-direction: column;
     padding: 1.75rem 2rem;
     box-shadow: 0 12px 28px rgba(0, 0, 0, 0.35);
