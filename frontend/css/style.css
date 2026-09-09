@@ -4,7 +4,7 @@
    ========================================================================== */
 
 /* Google Fonts */
-@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600&display=swap');
 
 :root {
   /* Core Brand Tokens (Section 5.8) */
@@ -38,9 +38,10 @@
   --cat-body-color: #C4562F;        /* Terracotta Rose */
   --cat-wellness-color: #C97F00;    /* Turmeric */
 
-  /* Typography Scale (Section 5.6) */
+  /* Typography Scale (Section 5.6 & Nav Bar Refinement) */
   --font-heading: 'Fraunces', Georgia, serif;
   --font-body: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  --font-nav: 'Space Grotesk', system-ui, -apple-system, sans-serif;
 
   /* Elevation */
   --shadow-resting: 0 1px 3px rgba(31, 51, 39, 0.06);
@@ -179,82 +180,169 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
   color: var(--color-turmeric);
 }
 
-/* Footer & Dark Context Wordmark */
+/* Header, Footer & Dark Context Wordmark */
+.site-header .brand-wordmark .ayu,
 .site-footer .brand-wordmark .ayu,
 .sidebar-header .brand-wordmark .ayu {
   color: var(--color-ivory);
 }
 
+.site-header .ayudhara-mark,
 .site-footer .ayudhara-mark,
 .sidebar-header .ayudhara-mark {
   color: var(--color-ivory);
 }
 
 /* ==========================================================================
-   Header & Navigation (Section 5.3)
+   Header & Navigation (Section 1 & 2 Refinements)
+   Solid Forest #1F3327 Bar, 3-Zone Flex, Space Grotesk Nav Typography
    ========================================================================== */
 .site-header {
   position: sticky;
   top: 0;
   z-index: 1000;
-  background-color: var(--color-ivory);
-  border-bottom: 1px solid var(--color-border);
-  transition: var(--transition-smooth);
+  background-color: var(--color-forest);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  transition: box-shadow 0.25s ease, background-color 0.25s ease;
 }
 
 .site-header.scrolled {
-  box-shadow: var(--shadow-header);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  background-color: rgba(251, 247, 239, 0.94);
+  background-color: var(--color-forest);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+}
+
+.header-container {
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0 40px;
 }
 
 .navbar {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: 78px;
+  height: 76px;
+  width: 100%;
+}
+
+/* Zone 1: Left - Logo + Wordmark (Fixed width, no stretching) */
+.nav-zone-left {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+/* Zone 2: Center - Nav Links (36px gap, visible margin both sides) */
+.nav-zone-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  margin: 0 2.5rem;
 }
 
 .nav-links {
   display: flex;
   align-items: center;
-  gap: 2.25rem;
+  gap: 36px;
   list-style: none;
+  margin: 0;
+  padding: 0;
 }
 
+/* Nav Link Typography: Space Grotesk 500, 15px, letter-spacing 0.02em, Subtle 3D Depth */
 .nav-link {
-  font-size: 0.95rem;
+  font-family: var(--font-nav);
+  font-size: 15px;
   font-weight: 500;
-  color: #2B2B23;
+  letter-spacing: 0.02em;
+  color: #FBF7EF;
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.4), 0 -1px 0 rgba(255, 255, 255, 0.08);
   position: relative;
-  padding: 0.25rem 0;
+  display: inline-block;
+  padding: 0.35rem 0;
+  text-decoration: none;
+  transition: color 0.2s ease, text-shadow 0.2s ease, transform 0.2s ease;
 }
 
-.nav-link:hover {
-  color: var(--color-forest);
-}
-
-.nav-link.active {
-  color: var(--color-forest);
-  font-weight: 600;
-}
-
-.nav-link.active::after {
+/* Sliding underline bar on hover */
+.nav-link::after {
   content: '';
   position: absolute;
-  bottom: -2px;
+  bottom: -3px;
   left: 0;
   width: 100%;
   height: 2px;
   background-color: var(--color-turmeric);
   border-radius: var(--radius-pill);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.2s ease;
+}
+
+.nav-link:hover {
+  color: var(--color-turmeric);
+  text-shadow: 0 2px 0 rgba(0, 0, 0, 0.45), 0 -1px 0 rgba(255, 255, 255, 0.12);
+  transform: translateY(-1px);
+}
+
+.nav-link:hover::after {
+  transform: scaleX(1);
+}
+
+/* Active / Current Page Link */
+.nav-link.active {
+  color: var(--color-turmeric);
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.45), 0 -1px 0 rgba(255, 255, 255, 0.12);
+}
+
+.nav-link.active::after {
+  transform: scaleX(1);
+}
+
+.nav-link.active:hover {
+  transform: none;
+}
+
+/* Zone 3: Right - Quick Enquiry & Staff Buttons (14px gap, min 32px margin from nav) */
+.nav-zone-right {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  margin-left: 32px;
 }
 
 .nav-cta {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 14px;
+}
+
+/* Header Buttons (Section 1 Refinements) */
+.btn-header-enquiry {
+  background-color: var(--color-turmeric);
+  color: var(--color-ivory);
+  border: 1px solid var(--color-turmeric);
+}
+
+.btn-header-enquiry:hover {
+  background-color: #B57200;
+  border-color: #B57200;
+  color: #FFFFFF;
+}
+
+.btn-header-staff {
+  background-color: transparent;
+  color: var(--color-ivory);
+  border: 1px solid var(--color-ivory);
+  transition: background-color var(--transition-fast), color var(--transition-fast), transform var(--transition-fast);
+}
+
+.btn-header-staff:hover {
+  background-color: rgba(251, 247, 239, 0.1);
+  color: var(--color-ivory);
+  border-color: var(--color-ivory);
 }
 
 .mobile-nav-toggle {
@@ -263,7 +351,7 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
   border: none;
   cursor: pointer;
   padding: 0.5rem;
-  color: var(--color-forest);
+  color: var(--color-ivory);
 }
 
 .mobile-nav-toggle svg {
@@ -457,9 +545,26 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 /* ==========================================================================
    Public Sections Layout (Tone A Ivory & Tone B Sand)
    ========================================================================== */
-.ethos-teaser, .about-details-section {
+.ethos-teaser {
   background-color: var(--color-sand); /* Tone B */
   padding: 6rem 0;
+}
+
+.about-origin-section {
+  background-color: var(--color-ivory); /* Tone A: Differentiated from Sand page-hero */
+  padding: 6rem 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.about-craft-section {
+  background-color: var(--color-sand); /* Tone B: Alternating rhythm */
+  padding: 6rem 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.about-cta-section {
+  background-color: var(--color-ivory); /* Tone A: Alternating rhythm */
+  padding: 4.5rem 0;
 }
 
 .catalog-section, .contact-page-section {
@@ -1281,6 +1386,47 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
    Responsive Adjustments
    ========================================================================== */
 @media (max-width: 992px) {
+  .header-container {
+    padding: 0 24px;
+  }
+
+  .navbar {
+    height: 64px;
+  }
+
+  .nav-zone-center {
+    margin: 0;
+  }
+
+  .nav-zone-right {
+    margin-left: auto;
+  }
+
+  .nav-links {
+    display: none;
+    position: absolute;
+    top: 64px;
+    left: 0;
+    width: 100%;
+    background-color: var(--color-forest);
+    flex-direction: column;
+    padding: 1.75rem 2rem;
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.35);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+    gap: 1.25rem;
+    z-index: 999;
+  }
+
+  .nav-links.open {
+    display: flex;
+  }
+
+  .mobile-nav-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
   .ethos-grid, .story-block, .story-block.reversed {
     grid-template-columns: 1fr;
     gap: 2.5rem;
@@ -1300,26 +1446,6 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 }
 
 @media (max-width: 768px) {
-  .nav-links {
-    display: none;
-    position: absolute;
-    top: 78px;
-    left: 0;
-    width: 100%;
-    background-color: var(--color-ivory);
-    flex-direction: column;
-    padding: 1.5rem;
-    box-shadow: var(--shadow-header);
-    border-bottom: 1px solid var(--color-border);
-  }
-
-  .nav-links.open {
-    display: flex;
-  }
-
-  .mobile-nav-toggle {
-    display: block;
-  }
 
   .footer-grid {
     grid-template-columns: 1fr;
