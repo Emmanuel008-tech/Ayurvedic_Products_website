@@ -1,0 +1,132 @@
+{% extends 'dashboard/base_dashboard.html' %}
+{% load static %}
+
+{% block page_title %}{{ title }}{% endblock %}
+
+{% block content %}
+
+<div style="max-width: 800px; margin: 0 auto;">
+  <div style="background-color: var(--color-white); border-radius: var(--radius-card); border: 1px solid var(--color-border); padding: 2.5rem; box-shadow: var(--shadow-resting);">
+    
+    <div style="margin-bottom: 2rem; border-bottom: 1px solid var(--color-border); padding-bottom: 1rem;">
+      <h3 style="margin-bottom: 0.25rem;">{{ title }}</h3>
+      <p style="color: var(--color-muted); font-size: 0.88rem; margin-bottom: 0;">Fill in formulation details. Changes will reflect immediately on the public storefront.</p>
+    </div>
+
+    {% if form.non_field_errors %}
+      <div class="alert-banner alert-error">
+        {% for error in form.non_field_errors %}
+          <span>⚠️ {{ error }}</span>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    <form method="POST" enctype="multipart/form-data" novalidate>
+      {% csrf_token %}
+
+      <!-- Product Name -->
+      <div class="form-group {% if form.name.errors %}has-error{% endif %}">
+        <label for="{{ form.name.id_for_label }}">Formulation Name <span style="color: var(--color-error);">*</span></label>
+        {{ form.name }}
+        {% if form.name.errors %}
+          <div class="field-error-msg">⚠️ {{ form.name.errors.0 }}</div>
+        {% endif %}
+      </div>
+
+      <!-- Category & Price in 2-Col Grid -->
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+        <!-- Category -->
+        <div class="form-group {% if form.category.errors %}has-error{% endif %}">
+          <label for="{{ form.category.id_for_label }}">Herbal Category <span style="color: var(--color-error);">*</span></label>
+          {{ form.category }}
+          {% if form.category.errors %}
+            <div class="field-error-msg">⚠️ {{ form.category.errors.0 }}</div>
+          {% endif %}
+        </div>
+
+        <!-- Price -->
+        <div class="form-group {% if form.price.errors %}has-error{% endif %}">
+          <label for="{{ form.price.id_for_label }}">Price in INR (₹) <span style="color: var(--color-error);">*</span></label>
+          {{ form.price }}
+          {% if form.price.errors %}
+            <div class="field-error-msg">⚠️ {{ form.price.errors.0 }}</div>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- Stock Quantity & Is Active -->
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+        <!-- Stock Quantity (Section 3.2 & 6.4) -->
+        <div class="form-group {% if form.stock_quantity.errors %}has-error{% endif %}">
+          <label for="{{ form.stock_quantity.id_for_label }}">Available Stock Quantity <span style="color: var(--color-error);">*</span></label>
+          {{ form.stock_quantity }}
+          <small style="color: var(--color-muted); font-size: 0.8rem; display: block; margin-top: 0.25rem;">
+            Items with 5 or fewer units trigger Low Stock warnings.
+          </small>
+          {% if form.stock_quantity.errors %}
+            <div class="field-error-msg">⚠️ {{ form.stock_quantity.errors.0 }}</div>
+          {% endif %}
+        </div>
+
+        <!-- Is Active Toggle -->
+        <div class="form-group" style="display: flex; flex-direction: column; justify-content: center;">
+          <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; margin-top: 0.5rem;">
+            {{ form.is_active }}
+            <span style="font-weight: 600; color: var(--color-forest);">Active on Public Website</span>
+          </label>
+          <small style="color: var(--color-muted); font-size: 0.8rem;">Unchecking this hides the product from the public catalog.</small>
+        </div>
+      </div>
+
+      <!-- Description -->
+      <div class="form-group {% if form.description.errors %}has-error{% endif %}">
+        <label for="{{ form.description.id_for_label }}">Detailed Description &amp; Ingredients <span style="color: var(--color-error);">*</span></label>
+        {{ form.description }}
+        {% if form.description.errors %}
+          <div class="field-error-msg">⚠️ {{ form.description.errors.0 }}</div>
+        {% endif %}
+      </div>
+
+      <!-- Product Image Upload with Live Preview (Section 6.4) -->
+      <div class="form-group {% if form.image.errors %}has-error{% endif %}">
+        <label for="{{ form.image.id_for_label }}">Product Photograph <span style="color: var(--color-error);">*</span></label>
+        {{ form.image }}
+        <small style="color: var(--color-muted); font-size: 0.8rem; display: block; margin-top: 0.25rem;">
+          Upload a clear photograph. Recommended ratio 4:3.
+        </small>
+        {% if form.image.errors %}
+          <div class="field-error-msg">⚠️ {{ form.image.errors.0 }}</div>
+        {% endif %}
+
+        <!-- Image Preview Container -->
+        <div class="image-preview-container">
+          <div class="image-preview-box">
+            {% if is_edit and product.image %}
+              <img id="liveImagePreview" src="{{ product.image.url }}" alt="{{ product.name }}">
+            {% else %}
+              <img id="liveImagePreview" src="" alt="Live Preview" style="display: none;">
+              <span id="noPreviewText" style="font-size: 11px; color: #888; text-align: center; padding: 0.5rem;">No Image Selected</span>
+            {% endif %}
+          </div>
+          <div>
+            <span style="font-size: 0.85rem; font-weight: 600; color: var(--color-forest); display: block;">Live Image Preview</span>
+            <span style="font-size: 0.8rem; color: var(--color-muted);">
+              {% if is_edit and product.image %}Current image shown. Selecting a new file will update the preview.{% else %}Select a file to see preview.{% endif %}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Form Actions -->
+      <div style="display: flex; gap: 1rem; margin-top: 2.5rem; padding-top: 1.5rem; border-top: 1px solid var(--color-border); align-items: center;">
+        <button type="submit" class="btn btn-primary">
+          <span>{% if is_edit %}Save Changes{% else %}Create Formulation{% endif %}</span>
+        </button>
+        <a href="{% url 'dashboard:product_list' %}" class="btn btn-outline">Cancel</a>
+      </div>
+
+    </form>
+  </div>
+</div>
+
+{% endblock %}

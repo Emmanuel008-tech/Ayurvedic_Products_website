@@ -1,0 +1,89 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Staff Login - AyuDhara</title>
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 44 44' fill='none'><path d='M8 32C12 37 20 37 24 33C28 29 27 23 23 19C20 16 20 12 22 7' stroke='%231F3327' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/><path d='M22 7C27 4 33 8 33 14C33 19 27 22 22 18' stroke='%231F3327' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/><path d='M22 18C24 14 27 11 31 8' stroke='%231F3327' stroke-width='2.2' stroke-linecap='round'/></svg>">
+
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body style="background-color: var(--color-sand);">
+
+  <div class="login-page-wrapper">
+    <div class="login-card">
+      
+      <!-- Center Brand Logo -->
+      <div class="login-brand-center">
+        <a href="{% url 'backend:home' %}" class="brand-logo" style="justify-content: center; margin-bottom: 0.75rem;">
+          <svg class="ayudhara-mark" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <path d="M 8 32 C 12 37 20 37 24 33 C 28 29 27 23 23 19 C 20 16 20 12 22 7" stroke="currentColor" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M 22 7 C 27 4 33 8 33 14 C 33 19 27 22 22 18" stroke="currentColor" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M 22 18 C 24 14 27 11 31 8" stroke="#C97F00" stroke-width="2.2" stroke-linecap="round"/>
+            <circle cx="31" cy="8" r="2.25" fill="#C97F00" />
+          </svg>
+          <span class="brand-wordmark">
+            <span class="ayu">Ayu</span><span class="dhara">Dhara</span>
+          </span>
+        </a>
+        <h2 style="font-size: 1.35rem; color: var(--color-forest); margin-bottom: 0.25rem;">Staff Admin Desk</h2>
+        <p style="color: var(--color-muted); font-size: 0.88rem; margin-bottom: 0;">Sign in to manage product formulations and customer orders</p>
+      </div>
+
+      <!-- Messages Banner -->
+      {% if messages %}
+        {% for message in messages %}
+          <div class="alert-banner alert-{{ message.tags }}">
+            <span>{{ message }}</span>
+          </div>
+        {% endfor %}
+      {% endif %}
+
+      {% if form.non_field_errors %}
+        <div class="alert-banner alert-error">
+          {% for error in form.non_field_errors %}
+            <span>⚠️ {{ error }}</span>
+          {% endfor %}
+        </div>
+      {% endif %}
+
+      <!-- Login Form -->
+      <form method="POST" action="{% url 'dashboard:login' %}">
+        {% csrf_token %}
+
+        <div class="form-group">
+          <label for="{{ form.username.id_for_label }}">Staff Username</label>
+          {{ form.username }}
+          {% if form.username.errors %}
+            <div class="field-error-msg">⚠️ {{ form.username.errors.0 }}</div>
+          {% endif %}
+        </div>
+
+        <div class="form-group">
+          <label for="{{ form.password.id_for_label }}">Password</label>
+          {{ form.password }}
+          {% if form.password.errors %}
+            <div class="field-error-msg">⚠️ {{ form.password.errors.0 }}</div>
+          {% endif %}
+        </div>
+
+        <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">
+          <span>Sign In to Dashboard</span>
+        </button>
+      </form>
+
+      <div style="text-align: center; margin-top: 2rem; border-top: 1px solid var(--color-border); padding-top: 1.25rem;">
+        <a href="{% url 'backend:home' %}" style="font-size: 0.88rem; color: var(--color-forest); font-weight: 500;">
+          ← Back to Public AyuDhara Store
+        </a>
+      </div>
+
+    </div>
+  </div>
+
+</body>
+</html>

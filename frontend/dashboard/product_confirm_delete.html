@@ -1,0 +1,48 @@
+{% extends 'dashboard/base_dashboard.html' %}
+{% load static %}
+
+{% block page_title %}Confirm Product Removal{% endblock %}
+
+{% block content %}
+
+<div style="max-width: 580px; margin: 2rem auto;">
+  <div style="background-color: var(--color-white); border-radius: var(--radius-card); border: 1px solid var(--color-border); padding: 2.5rem; box-shadow: var(--shadow-hover); text-align: center;">
+    
+    <div style="width: 60px; height: 60px; border-radius: var(--radius-pill); background-color: #FFEBEE; color: var(--color-error); display: flex; align-items: center; justify-content: center; font-size: 1.8rem; margin: 0 auto 1.5rem auto;">
+      ⚠️
+    </div>
+
+    <h2 style="font-size: 1.5rem; color: var(--color-forest); margin-bottom: 0.75rem;">Confirm Formulation Removal</h2>
+    <p style="color: var(--color-muted); font-size: 0.95rem; margin-bottom: 2rem;">
+      Are you sure you want to permanently delete <strong>"{{ product.name }}"</strong>? This action cannot be undone and will remove it from the public store catalog.
+    </p>
+
+    <!-- Product Mini Summary Card -->
+    <div style="background-color: var(--color-sand); border-radius: var(--radius-card); padding: 1.25rem; display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem; text-align: left;">
+      {% if product.image %}
+        <img src="{{ product.image.url }}" alt="{{ product.name }}" style="width: 60px; height: 60px; border-radius: 6px; object-fit: cover; border: 1px solid var(--color-border);">
+      {% endif %}
+      <div>
+        <h4 style="margin-bottom: 0.2rem; color: var(--color-forest);">{{ product.name }}</h4>
+        <span style="font-size: 0.85rem; color: var(--color-muted); display: block;">Category: {{ product.get_category_display }} | Price: ₹{{ product.price }}</span>
+        <span style="font-size: 0.8rem; color: var(--color-muted);">Current Stock: {{ product.stock_quantity }} units</span>
+      </div>
+    </div>
+
+    <!-- Confirm Form -->
+    <form method="POST">
+      {% csrf_token %}
+      <div style="display: flex; gap: 1rem; justify-content: center;">
+        <a href="{% url 'dashboard:product_list' %}" class="btn btn-outline" style="min-width: 130px;">
+          <span>No, Cancel</span>
+        </a>
+        <button type="submit" class="btn btn-sm" style="background-color: var(--color-error); color: #FFFFFF; min-width: 150px;">
+          <span>Yes, Delete Product</span>
+        </button>
+      </div>
+    </form>
+
+  </div>
+</div>
+
+{% endblock %}

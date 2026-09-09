@@ -1,178 +1,180 @@
 /**
- * Vanam Ayurveda - Main Interactive Scripts (Vanilla JS)
+ * AyuDhara - Main Interactive Scripts (Vanilla JS)
+ * Handles:
+ * - Background video cycling (Hero banner) without manual pill indicators
+ * - Sticky header blur on scroll
+ * - Mobile navigation menu toggle
+ * - Dynamic WhatsApp message generation on public contact form
+ * - Custom Admin Dashboard: live image preview & mobile sidebar toggle
  */
 
 document.addEventListener('DOMContentLoaded', () => {
-  // Mobile Navigation Menu Toggle
-  const mobileToggle = document.getElementById('mobileNavToggle');
-  const navLinks = document.getElementById('navLinks');
 
-  if (mobileToggle && navLinks) {
-    mobileToggle.addEventListener('click', () => {
-      const isOpen = navLinks.classList.contains('is-open');
-      if (isOpen) {
-        navLinks.classList.remove('is-open');
-        mobileToggle.setAttribute('aria-expanded', 'false');
-      } else {
-        navLinks.classList.add('is-open');
-        mobileToggle.setAttribute('aria-expanded', 'true');
-      }
-    });
-
-    // Close menu when clicking outside or clicking a nav link
-    document.addEventListener('click', (e) => {
-      if (!navLinks.contains(e.target) && !mobileToggle.contains(e.target)) {
-        navLinks.classList.remove('is-open');
-        mobileToggle.setAttribute('aria-expanded', 'false');
-      }
-    });
-
-    navLinks.querySelectorAll('a').forEach(link => {
-      link.addEventListener('click', () => {
-        navLinks.classList.remove('is-open');
-        mobileToggle.setAttribute('aria-expanded', 'false');
-      });
-    });
-  }
-
-  // Pre-select product in Enquiry Form when clicking "Quick Enquiry" button on a product card
-  const enquiryBtns = document.querySelectorAll('.js-enquire-btn');
-  const productSelect = document.getElementById('id_product');
-  const contactSection = document.getElementById('contact');
-
-  enquiryBtns.forEach(btn => {
-    btn.addEventListener('click', (e) => {
-      const productId = btn.getAttribute('data-product-id');
-      if (productSelect && productId) {
-        productSelect.value = productId;
-        
-        // Highlight form control temporarily
-        productSelect.classList.add('highlight-select');
-        setTimeout(() => {
-          productSelect.classList.remove('highlight-select');
-        }, 1500);
-      }
-
-      if (contactSection) {
-        contactSection.scrollIntoView({ behavior: 'smooth' });
-      }
-    });
-  });
-
-  // Dynamic WhatsApp helper update when typing into enquiry form
-  const nameInput = document.getElementById('id_name');
-  const phoneInput = document.getElementById('id_phone_number');
-  const messageInput = document.getElementById('id_message');
-  const dynamicWaLink = document.getElementById('dynamicWaSubmitLink');
-
-  function updateDynamicWhatsAppUrl() {
-    if (!dynamicWaLink) return;
-    
-    const selectedOpt = productSelect ? productSelect.options[productSelect.selectedIndex] : null;
-    const productName = (selectedOpt && selectedOpt.value) ? selectedOpt.text : 'Ayurvedic Product';
-    const custName = nameInput ? nameInput.value.trim() : '';
-    const custPhone = phoneInput ? phoneInput.value.trim() : '';
-    const custMsg = messageInput ? messageInput.value.trim() : '';
-
-    const bizNumber = '919778256391';
-    let text = `Namaste Vanam Ayurveda! 🙏\n\nI am interested in enquiring about:\n📦 *${productName}*\n`;
-    if (custName) text += `\n👤 Name: ${custName}`;
-    if (custPhone) text += `\n📞 Phone: ${custPhone}`;
-    if (custMsg) text += `\n💬 Note: ${custMsg}`;
-    text += `\n\nPlease send details. Thank you!`;
-
-    const encodedText = encodeURIComponent(text);
-    dynamicWaLink.href = `https://wa.me/${bizNumber}?text=${encodedText}`;
-  }
-
-  if (dynamicWaLink) {
-    [nameInput, phoneInput, messageInput, productSelect].forEach(element => {
-      if (element) {
-        element.addEventListener('input', updateDynamicWhatsAppUrl);
-        element.addEventListener('change', updateDynamicWhatsAppUrl);
-      }
-    });
-  }
-
-  // Cinematic Sequential Background Video Carousel for Hero Banner
-  const videoElements = [
+  /* --------------------------------------------------------------------------
+     1. Seamless Background Video Cycling (Hero Banner)
+     -------------------------------------------------------------------------- */
+  const heroVideos = [
     document.getElementById('heroVideo0'),
     document.getElementById('heroVideo1'),
     document.getElementById('heroVideo2')
   ].filter(Boolean);
 
-  const indicatorBtns = document.querySelectorAll('#heroVideoControls .video-pill-btn');
+  let currentVideoIndex = 0;
+  let videoTimer = null;
 
-  if (videoElements.length > 0) {
-    let currentIdx = 0;
-    let fallbackTimeout = null;
+  function switchVideo(nextIndex) {
+    if (heroVideos.length <= 1) return;
 
-    function activateVideo(index) {
-      if (fallbackTimeout) {
-        clearTimeout(fallbackTimeout);
-        fallbackTimeout = null;
-      }
+    const currentVid = heroVideos[currentVideoIndex];
+    const nextVid = heroVideos[nextIndex];
 
-      currentIdx = (index + videoElements.length) % videoElements.length;
+    if (!currentVid || !nextVid) return;
 
-      videoElements.forEach((vid, i) => {
-        if (i === currentIdx) {
-          vid.currentTime = 0;
-          vid.classList.add('active');
-          const playPromise = vid.play();
-          if (playPromise !== undefined) {
-            playPromise.catch(err => {
-              console.log('Autoplay handled:', err);
-            });
-          }
-
-          // Fallback timer based on duration
-          if (vid.duration && !isNaN(vid.duration)) {
-            fallbackTimeout = setTimeout(() => {
-              if (i === currentIdx) {
-                activateVideo(i + 1);
-              }
-            }, (vid.duration + 0.5) * 1000);
-          }
-        } else {
-          vid.classList.remove('active');
-          setTimeout(() => {
-            if (!vid.classList.contains('active')) {
-              vid.pause();
-            }
-          }, 1400);
-        }
-      });
-
-      // Update indicator button states
-      indicatorBtns.forEach((btn, i) => {
-        if (i === currentIdx) {
-          btn.classList.add('active');
-        } else {
-          btn.classList.remove('active');
-        }
+    // Start playing the next video
+    nextVid.currentTime = 0;
+    const playPromise = nextVid.play();
+    if (playPromise !== undefined) {
+      playPromise.then(() => {
+        nextVid.classList.add('active');
+        currentVid.classList.remove('active');
+        currentVideoIndex = nextIndex;
+      }).catch(() => {
+        // Fallback if browser throttles autoplay
+        nextVid.classList.add('active');
+        currentVid.classList.remove('active');
+        currentVideoIndex = nextIndex;
       });
     }
+  }
 
-    // Attach ended event listener to each video
-    videoElements.forEach((vid, idx) => {
-      vid.addEventListener('ended', () => {
-        activateVideo(idx + 1);
-      });
+  function startVideoAutoplayCycle() {
+    if (heroVideos.length <= 1) return;
+    if (videoTimer) clearInterval(videoTimer);
+
+    videoTimer = setInterval(() => {
+      const nextIndex = (currentVideoIndex + 1) % heroVideos.length;
+      switchVideo(nextIndex);
+    }, 7000); // Transitions smoothly every 7 seconds
+  }
+
+  if (heroVideos.length > 0) {
+    startVideoAutoplayCycle();
+  }
+
+  /* --------------------------------------------------------------------------
+     2. Sticky Header Scroll Effect
+     -------------------------------------------------------------------------- */
+  const siteHeader = document.getElementById('siteHeader');
+  if (siteHeader) {
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 40) {
+        siteHeader.classList.add('scrolled');
+      } else {
+        siteHeader.classList.remove('scrolled');
+      }
+    }, { passive: true });
+  }
+
+  /* --------------------------------------------------------------------------
+     3. Public Mobile Navigation Toggle
+     -------------------------------------------------------------------------- */
+  const mobileNavToggle = document.getElementById('mobileNavToggle');
+  const navLinks = document.getElementById('navLinks');
+
+  if (mobileNavToggle && navLinks) {
+    mobileNavToggle.addEventListener('click', () => {
+      const isOpen = navLinks.classList.toggle('open');
+      mobileNavToggle.setAttribute('aria-expanded', isOpen);
     });
 
-    // Allow user to click any video pill to switch videos
-    indicatorBtns.forEach((btn) => {
-      btn.addEventListener('click', () => {
-        const targetIdx = parseInt(btn.getAttribute('data-video-index'), 10);
-        if (!isNaN(targetIdx)) {
-          activateVideo(targetIdx);
-        }
+    // Close mobile menu on link click
+    navLinks.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => {
+        navLinks.classList.remove('open');
+        mobileNavToggle.setAttribute('aria-expanded', 'false');
       });
     });
+  }
 
-    // Start playback
-    activateVideo(0);
+  /* --------------------------------------------------------------------------
+     4. Dynamic WhatsApp URL Generation on Contact Form
+     -------------------------------------------------------------------------- */
+  const nameInput = document.getElementById('id_name');
+  const phoneInput = document.getElementById('id_phone_number');
+  const productSelect = document.getElementById('id_product');
+  const messageInput = document.getElementById('id_message');
+  const dynamicWaLink = document.getElementById('dynamicWaSubmitLink');
+
+  const bizNumber = '919778256391';
+
+  function updateDynamicWaLink() {
+    if (!dynamicWaLink) return;
+
+    const name = nameInput ? nameInput.value.trim() : '';
+    const phone = phoneInput ? phoneInput.value.trim() : '';
+    const message = messageInput ? messageInput.value.trim() : '';
+    let productName = 'General Enquiry';
+
+    if (productSelect && productSelect.selectedIndex > 0) {
+      productName = productSelect.options[productSelect.selectedIndex].text;
+    }
+
+    let text = `Namaste AyuDhara! 🙏\n\nI am interested in enquiring about:\n📦 *${productName}*\n`;
+    if (name) text += `\n👤 Name: ${name}`;
+    if (phone) text += `\n📞 Phone: ${phone}`;
+    if (message) text += `\n💬 Note: ${message}`;
+    text += `\n\nPlease let me know about availability and delivery details. Thank you!`;
+
+    dynamicWaLink.href = `https://wa.me/${bizNumber}?text=${encodeURIComponent(text)}`;
+  }
+
+  if (nameInput) nameInput.addEventListener('input', updateDynamicWaLink);
+  if (phoneInput) phoneInput.addEventListener('input', updateDynamicWaLink);
+  if (productSelect) productSelect.addEventListener('change', updateDynamicWaLink);
+  if (messageInput) messageInput.addEventListener('input', updateDynamicWaLink);
+
+  // Initialize once on page load
+  updateDynamicWaLink();
+
+  /* --------------------------------------------------------------------------
+     5. Custom Admin Dashboard: Live Image Preview
+     -------------------------------------------------------------------------- */
+  const imageInput = document.getElementById('id_image');
+  const liveImagePreview = document.getElementById('liveImagePreview');
+
+  if (imageInput && liveImagePreview) {
+    imageInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (file && file.type.startsWith('image/')) {
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          liveImagePreview.src = event.target.result;
+          liveImagePreview.style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+  }
+
+  /* --------------------------------------------------------------------------
+     6. Custom Admin Dashboard: Mobile Sidebar Toggle
+     -------------------------------------------------------------------------- */
+  const dashboardMobileToggle = document.getElementById('dashboardMobileToggle');
+  const dashboardSidebar = document.getElementById('dashboardSidebar');
+
+  if (dashboardMobileToggle && dashboardSidebar) {
+    dashboardMobileToggle.addEventListener('click', () => {
+      dashboardSidebar.classList.toggle('open');
+    });
+
+    // Close when clicking outside on mobile
+    document.addEventListener('click', (e) => {
+      if (window.innerWidth <= 768 && 
+          !dashboardSidebar.contains(e.target) && 
+          !dashboardMobileToggle.contains(e.target)) {
+        dashboardSidebar.classList.remove('open');
+      }
+    });
   }
 
 });

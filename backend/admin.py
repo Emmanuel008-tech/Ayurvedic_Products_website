@@ -5,10 +5,10 @@ from .models import Product, Enquiry
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ('image_preview', 'name', 'category', 'price', 'is_active', 'created_at')
+    list_display = ('image_preview', 'name', 'category', 'price', 'stock_quantity', 'is_active', 'created_at')
     list_filter = ('category', 'is_active', 'created_at')
     search_fields = ('name', 'description')
-    list_editable = ('price', 'is_active')
+    list_editable = ('price', 'stock_quantity', 'is_active')
     readonly_fields = ('image_preview_large', 'created_at', 'updated_at')
 
     def image_preview(self, obj):
@@ -32,11 +32,11 @@ class ProductAdmin(admin.ModelAdmin):
 
 @admin.register(Enquiry)
 class EnquiryAdmin(admin.ModelAdmin):
-    list_display = ('name', 'phone_number', 'product', 'is_processed', 'created_at', 'whatsapp_action')
-    list_filter = ('is_processed', 'created_at', 'product__category')
+    list_display = ('name', 'phone_number', 'product', 'status', 'is_processed', 'created_at', 'whatsapp_action')
+    list_filter = ('status', 'is_processed', 'created_at', 'product__category')
     search_fields = ('name', 'phone_number', 'message', 'product__name')
-    list_editable = ('is_processed',)
-    readonly_fields = ('created_at',)
+    list_editable = ('status', 'is_processed')
+    readonly_fields = ('created_at', 'updated_at')
 
     def whatsapp_action(self, obj):
         url = obj.get_whatsapp_url()

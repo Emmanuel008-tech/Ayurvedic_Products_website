@@ -1,0 +1,149 @@
+{% extends 'dashboard/base_dashboard.html' %}
+{% load static %}
+
+{% block page_title %}Products &amp; Formulations Inventory{% endblock %}
+
+{% block content %}
+
+<!-- Header & Filter Bar -->
+<div class="dashboard-card-table">
+  <div class="table-header-row">
+    <div>
+      <h3 style="margin-bottom: 0.2rem;">All Formulations</h3>
+      <p style="color: var(--color-muted); font-size: 0.85rem; margin-bottom: 0;">Manage public products, pricing, categories, and inventory counts</p>
+    </div>
+    
+    <div>
+      <a href="{% url 'dashboard:product_add' %}" class="btn btn-primary btn-sm">
+        <span>+ Add New Product</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- Filters Row -->
+  <div style="padding: 1rem 1.75rem; background-color: var(--color-sand); border-bottom: 1px solid var(--color-border);">
+    <form method="GET" action="{% url 'dashboard:product_list' %}" style="display: flex; gap: 1rem; flex-wrap: wrap; align-items: center;">
+      
+      <!-- Search -->
+      <div style="flex: 1; min-width: 220px;">
+        <input type="text" name="q" value="{{ query }}" placeholder="Search by formulation name or ingredient..." class="form-input" style="padding: 0.5rem 0.85rem; font-size: 0.88rem;">
+      </div>
+
+      <!-- Category Filter -->
+      <div style="min-width: 170px;">
+        <select name="category" class="form-select" style="padding: 0.5rem 0.85rem; font-size: 0.88rem;">
+          <option value="">All Categories</option>
+          {% for cat_key, cat_name in categories %}
+            <option value="{{ cat_key }}" {% if category == cat_key %}selected{% endif %}>{{ cat_name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <!-- Stock Status Filter -->
+      <div style="min-width: 160px;">
+        <select name="stock" class="form-select" style="padding: 0.5rem 0.85rem; font-size: 0.88rem;">
+          <option value="">All Stock Levels</option>
+          <option value="in" {% if stock_filter == 'in' %}selected{% endif %}>In Stock (&gt; 5)</option>
+          <option value="low" {% if stock_filter == 'low' %}selected{% endif %}>Low Stock (&le; 5)</option>
+          <option value="out" {% if stock_filter == 'out' %}selected{% endif %}>Out of Stock (0)</option>
+        </select>
+      </div>
+
+      <button type="submit" class="btn btn-forest btn-sm">Filter</button>
+      {% if query or category or stock_filter %}
+        <a href="{% url 'dashboard:product_list' %}" class="btn btn-outline btn-sm" style="background: #FFFFFF;">Clear</a>
+      {% endif %}
+    </form>
+  </div>
+
+  <!-- Data Table -->
+  <div class="data-table-container">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Thumbnail</th>
+          <th>Formulation Name</th>
+          <th>Category</th>
+          <th>Price (INR)</th>
+          <th>Stock Quantity</th>
+          <th>Public Visibility</th>
+          <th style="text-align: right;">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for product in products %}
+          <tr>
+            <!-- Thumbnail -->
+            <td data-label="Thumbnail">
+              {% if product.image %}
+                <img src="{{ product.image.url }}" alt="{{ product.name }}" style="width: 48px; height: 48px; border-radius: 6px; object-fit: cover; border: 1px solid var(--color-border);">
+              {% else %}
+                <div style="width: 48px; height: 48px; border-radius: 6px; background: #EEE; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #888;">No Img</div>
+              {% endif %}
+            </td>
+
+            <!-- Name -->
+            <td data-label="Name">
+              <strong style="color: var(--color-forest); font-size: 0.95rem;">{{ product.name }}</strong>
+              <p style="color: var(--color-muted); font-size: 0.8rem; margin: 0.2rem 0 0 0; max-width: 320px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                {{ product.description }}
+              </p>
+            </td>
+
+            <!-- Category -->
+            <td data-label="Category">
+              <span class="category-pill cat-pill-{{ product.category }}" style="position: static; box-shadow: none; display: inline-block;">
+                {{ product.get_category_display }}
+              </span>
+            </td>
+
+            <!-- Price -->
+            <td data-label="Price" style="font-weight: 600; font-family: var(--font-heading); font-size: 1.05rem;">
+              ₹ {{ product.price }}
+            </td>
+
+            <!-- Stock Quantity (Flagged visually) -->
+            <td data-label="Stock">
+              {% if product.stock_quantity == 0 %}
+                <span class="stock-badge stock-out">Out of Stock (0)</span>
+              {% elif product.stock_quantity <= 5 %}
+                <span class="stock-badge stock-low">Low Stock ({{ product.stock_quantity }})</span>
+              {% else %}
+                <span class="stock-badge stock-in">In Stock ({{ product.stock_quantity }})</span>
+              {% endif %}
+            </td>
+
+            <!-- Visibility -->
+            <td data-label="Visibility">
+              {% if product.is_active %}
+                <span style="color: #2E7D32; font-size: 0.85rem; font-weight: 600;">● Active</span>
+              {% else %}
+                <span style="color: var(--color-muted); font-size: 0.85rem;">Hidden</span>
+              {% endif %}
+            </td>
+
+            <!-- Action Buttons -->
+            <td data-label="Actions" style="text-align: right;">
+              <div style="display: inline-flex; gap: 0.5rem;">
+                <a href="{% url 'dashboard:product_edit' product.id %}" class="btn btn-outline btn-sm" title="Edit Formulation">
+                  ✏️ Edit
+                </a>
+                <a href="{% url 'dashboard:product_delete' product.id %}" class="btn btn-outline btn-sm" style="color: var(--color-error); border-color: #FFCDD2;" title="Delete Formulation">
+                  🗑️ Delete
+                </a>
+              </div>
+            </td>
+          </tr>
+        {% empty %}
+          <tr>
+            <td colspan="7" style="text-align: center; padding: 3rem; color: var(--color-muted);">
+              No products found matching your search.
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+{% endblock %}
