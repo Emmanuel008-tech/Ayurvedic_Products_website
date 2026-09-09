@@ -1,5 +1,6 @@
 from django.db import models
 from django.conf import settings
+import re
 import urllib.parse
 
 
@@ -66,6 +67,7 @@ class Product(models.Model):
         Generates dynamic wa.me link with encoded enquiry message for this product.
         """
         biz_number = getattr(settings, 'WHATSAPP_BUSINESS_NUMBER', '919778256391')
+        clean_biz_number = re.sub(r'\D', '', str(biz_number))
         
         text = f"Namaste AyuDhara! 🙏\n\nI would like to enquire about your continuous heritage formulation:\n📦 *{self.name}*\n💰 Price: ₹{self.price}\n🏷️ Category: {self.get_category_display()}\n"
         
@@ -79,7 +81,7 @@ class Product(models.Model):
         text += "\n\nPlease let me know about availability and delivery details. Thank you!"
         
         encoded_text = urllib.parse.quote(text)
-        return f"https://wa.me/{biz_number}?text={encoded_text}"
+        return f"https://wa.me/{clean_biz_number}?text={encoded_text}"
 
 
 class Enquiry(models.Model):
@@ -121,6 +123,7 @@ class Enquiry(models.Model):
 
     def get_whatsapp_url(self):
         biz_number = getattr(settings, 'WHATSAPP_BUSINESS_NUMBER', '919778256391')
+        clean_biz_number = re.sub(r'\D', '', str(biz_number))
         if self.product:
             return self.product.get_whatsapp_url(
                 customer_name=self.name,
@@ -129,4 +132,4 @@ class Enquiry(models.Model):
             )
         else:
             text = f"Namaste AyuDhara! 🙏\n\nI have an enquiry:\n👤 Name: {self.name}\n📞 Phone: {self.phone_number}\n💬 Message: {self.message}"
-            return f"https://wa.me/{biz_number}?text={urllib.parse.quote(text)}"
+            return f"https://wa.me/{clean_biz_number}?text={urllib.parse.quote(text)}"

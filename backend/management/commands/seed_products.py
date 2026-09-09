@@ -61,3 +61,16 @@ class Command(BaseCommand):
                 self.stdout.write(self.style.WARNING(f"Updated product: {obj.name} (Stock: {obj.stock_quantity})"))
 
         self.stdout.write(self.style.SUCCESS(f"Successfully processed {len(products_data)} AyuDhara products ({count} new)."))
+
+        # Ensure default staff/superuser account exists
+        from django.contrib.auth.models import User
+        if not User.objects.filter(username="admin").exists():
+            User.objects.create_superuser("admin", "admin@ayudhara.com", "adminpassword123")
+            self.stdout.write(self.style.SUCCESS("Created staff superuser: admin / adminpassword123"))
+        else:
+            admin_user = User.objects.get(username="admin")
+            admin_user.set_password("adminpassword123")
+            admin_user.is_staff = True
+            admin_user.is_superuser = True
+            admin_user.save()
+            self.stdout.write(self.style.SUCCESS("Staff superuser credentials confirmed: admin / adminpassword123"))
