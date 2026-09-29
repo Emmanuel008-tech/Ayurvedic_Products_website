@@ -4,8 +4,8 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.db.models import Q
-from .models import Product, Enquiry
-from .dashboard_forms import DashboardLoginForm, ProductForm
+from ..models import Product, Enquiry
+from .forms import DashboardLoginForm, ProductForm
 
 
 def dashboard_login_view(request):

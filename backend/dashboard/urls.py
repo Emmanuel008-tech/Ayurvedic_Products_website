@@ -1,5 +1,5 @@
 from django.urls import path
-from . import dashboard_views as views
+from . import views
 
 app_name = 'dashboard'
 

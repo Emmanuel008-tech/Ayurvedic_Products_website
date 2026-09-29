@@ -1,5 +1,5 @@
 from django import forms
-from .models import Product, Enquiry
+from ..models import Product, Enquiry
 
 
 class DashboardLoginForm(forms.Form):

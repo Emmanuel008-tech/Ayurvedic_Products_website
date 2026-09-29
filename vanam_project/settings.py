@@ -40,7 +40,7 @@ ROOT_URLCONF = 'vanam_project.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'frontend'],
+        'DIRS': [BASE_DIR / 'frontend' / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -88,7 +88,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images, Videos)
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [
-    BASE_DIR / 'frontend',
+    BASE_DIR / 'frontend' / 'static',
 ]
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
@@ -97,7 +97,7 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
 # WhatsApp Business Integration Settings
-WHATSAPP_BUSINESS_NUMBER = '919778256391'
+WHATSAPP_BUSINESS_NUMBER = '+91 97782 56391'
 WHATSAPP_DISPLAY_NUMBER = '+91 97782 56391'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

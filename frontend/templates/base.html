@@ -66,12 +66,6 @@
         <div class="nav-zone-right">
           <div class="nav-cta">
             <a href="{% url 'backend:contact' %}" class="btn btn-header-enquiry btn-sm">Quick Enquiry</a>
-            <a href="{% url 'dashboard:overview' %}" class="btn btn-header-staff btn-sm" title="Staff Admin Dashboard" aria-label="Staff Dashboard">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-              </svg>
-              <span>Staff</span>
-            </a>
           </div>
           <button class="mobile-nav-toggle" id="mobileNavToggle" aria-label="Toggle Navigation Menu" aria-expanded="false">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -112,10 +106,9 @@
           <h4>Explore</h4>
           <ul class="footer-links">
             <li><a href="{% url 'backend:home' %}">Home</a></li>
-            <li><a href="{% url 'backend:about' %}">Brand Story & Heritage</a></li>
+            <li><a href="{% url 'backend:about' %}">Brand Story &amp; Heritage</a></li>
             <li><a href="{% url 'backend:products' %}">Complete Product Catalog</a></li>
             <li><a href="{% url 'backend:contact' %}">Send an Enquiry</a></li>
-            <li><a href="{% url 'dashboard:overview' %}">Staff Admin Dashboard</a></li>
           </ul>
         </div>
 

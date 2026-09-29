@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.conf import settings
 from .models import Product, Enquiry
@@ -49,6 +49,24 @@ def products_view(request):
         'whatsapp_business_number': getattr(settings, 'WHATSAPP_DISPLAY_NUMBER', '+91 97782 56391'),
     }
     return render(request, 'products.html', context)
+
+
+def product_detail_view(request, pk):
+    """
+    Dedicated Product Details page:
+    - Displays detailed product information, high-res image, ingredients, benefits, stock status
+    - Direct WhatsApp link and Send Enquiry form integration
+    - Shows related formulations in the same category
+    """
+    product = get_object_or_404(Product, pk=pk, is_active=True)
+    related_products = Product.objects.filter(is_active=True, category=product.category).exclude(pk=product.pk)[:3]
+
+    context = {
+        'product': product,
+        'related_products': related_products,
+        'whatsapp_business_number': getattr(settings, 'WHATSAPP_DISPLAY_NUMBER', '+91 97782 56391'),
+    }
+    return render(request, 'product_detail.html', context)
 
 
 def contact_view(request):

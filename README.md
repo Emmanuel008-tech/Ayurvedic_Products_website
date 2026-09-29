@@ -11,13 +11,14 @@ This project is organized into structured frontend and backend directories:
 ```
 Ayurvedic_Products_website/
 │
-├── frontend/                     # Frontend templates, styles, scripts, and video assets
-│   ├── base.html                 # Master layout template (AyuDhara SVG logo mark, Navigation, Footer, Meta, Tokens)
-│   ├── home.html                 # Home page with 3-reel cinematic video background hero & category accents
-│   ├── about.html                # About Us page (Heritage, Taila Paka Vidhi, Craft pillars)
-│   ├── products.html             # Products catalog page with category filtering (ORM) & 4:3 cards
-│   ├── contact.html              # Contact & Enquiry form with 10-digit Indian phone regex validation
-│   ├── dashboard/                # Custom Admin Dashboard Templates (Section 6)
+├── frontend/                     # Frontend templates and static assets
+│   ├── templates/                # Django templates
+│   │   ├── base.html             # Shared public-site layout
+│   │   ├── home.html             # Home page
+│   │   ├── about.html            # About Us page
+│   │   ├── products.html         # Products catalog page
+│   │   ├── contact.html          # Contact & enquiry form
+│   │   └── dashboard/            # Custom staff dashboard templates
 │   │   ├── base_dashboard.html   # Persistent sidebar layout & mobile responsive drawer
 │   │   ├── login.html            # Dedicated staff authentication portal
 │   │   ├── overview.html         # Store Overview with 3 KPI metric cards & quick tables
@@ -25,14 +26,12 @@ Ayurvedic_Products_website/
 │   │   ├── product_form.html     # Add & Edit Product form with live JavaScript image preview
 │   │   ├── product_confirm_delete.html # Confirmation modal for product deletion
 │   │   └── enquiry_list.html     # Customer enquiries table with status workflow toggles
-│   ├── css/
+│   └── static/                   # CSS, JavaScript, and video assets
+│       ├── css/
 │   │   └── style.css             # Vanilla CSS design system (Tone A Ivory, Tone B Sand, Category Top-Borders)
-│   ├── js/
+│       ├── js/
 │   │   └── main.js               # Multi-video switcher, mobile navigation, dynamic form sync, live image preview
-│   └── videos/                   # 3 seamless background videos for hero carousel
-│       ├── ayurveda_spices_herbs.mp4
-│       ├── ayurveda_oil_ritual.mp4
-│       └── ayurveda_dried_botanicals.mp4
+│       └── videos/               # Background videos for hero carousel
 │
 ├── backend/                      # Django backend application package
 │   ├── __init__.py
@@ -41,9 +40,10 @@ Ayurvedic_Products_website/
 │   ├── forms.py                  # Public EnquiryForm with 10-digit Indian phone regex validation
 │   ├── views.py                  # Multi-page public views (home, about, products, contact)
 │   ├── urls.py                   # Public URL routing (namespace 'backend')
-│   ├── dashboard_forms.py        # Staff Dashboard LoginForm & ProductForm
-│   ├── dashboard_views.py        # Custom Dashboard views (KPI overview, Product CRUD, Enquiry status)
-│   ├── dashboard_urls.py         # Dashboard URL routing (namespace 'dashboard')
+│   ├── dashboard/                # Staff dashboard package
+│   │   ├── forms.py              # Staff Dashboard LoginForm & ProductForm
+│   │   ├── views.py              # Dashboard views (KPI overview, Product CRUD, Enquiry status)
+│   │   └── urls.py               # Dashboard URL routing (namespace 'dashboard')
 │   ├── admin.py                  # Django default admin interface with thumbnail preview & WhatsApp actions
 │   ├── tests.py                  # Full test suite (16 tests: models, views, forms, and custom dashboard)
 │   ├── migrations/               # Database migration files
@@ -53,7 +53,7 @@ Ayurvedic_Products_website/
 │
 ├── vanam_project/                # Django project configuration
 │   ├── __init__.py
-│   ├── settings.py               # Configured for frontend/ templates & staticfiles, media
+│   ├── settings.py               # Configured template, static, and media paths
 │   ├── urls.py                   # Main project URL router (/dashboard/ and /)
 │   ├── wsgi.py                   # WSGI server gateway
 │   └── asgi.py                   # ASGI server gateway

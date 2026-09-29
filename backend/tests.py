@@ -88,6 +88,20 @@ class PublicPagesAndValidationTest(TestCase):
         self.assertContains(response, "KeshVeda Herbal Hair Oil")
         self.assertNotContains(response, "Kumkumadi Radiant Face Pack")
 
+    def test_product_detail_page(self):
+        response = self.client.get(reverse('backend:product_detail', args=[self.product1.id]))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Kumkumadi Radiant Face Pack")
+        self.assertContains(response, "Radiance saffron pack.")
+        self.assertContains(response, "₹ 650.00")
+        self.assertContains(response, "Order on WhatsApp")
+        self.assertContains(response, "Send Formal Enquiry")
+
+    def test_staff_route_accessible(self):
+        response = self.client.get('/staff/', follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Staff Admin Desk")
+
     def test_contact_page_get(self):
         response = self.client.get(reverse('backend:contact'))
         self.assertEqual(response.status_code, 200)
