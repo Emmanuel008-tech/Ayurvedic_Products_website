@@ -13,7 +13,7 @@ def home_view(request):
     
     context = {
         'featured_products': featured_products,
-        'whatsapp_business_number': getattr(settings, 'WHATSAPP_DISPLAY_NUMBER', '+91 97782 56391'),
+        'whatsapp_business_number': getattr(settings, 'WHATSAPP_DISPLAY_NUMBER', '+91 80753 19502'),
     }
     return render(request, 'home.html', context)
 
@@ -23,7 +23,7 @@ def about_view(request):
     Dedicated About Us page: Brand heritage, Taila Paka Vidhi, organic harvesting principles.
     """
     context = {
-        'whatsapp_business_number': getattr(settings, 'WHATSAPP_DISPLAY_NUMBER', '+91 97782 56391'),
+        'whatsapp_business_number': getattr(settings, 'WHATSAPP_DISPLAY_NUMBER', '+91 80753 19502'),
     }
     return render(request, 'about.html', context)
 
@@ -46,7 +46,7 @@ def products_view(request):
         'products': products,
         'selected_category': category,
         'categories': categories,
-        'whatsapp_business_number': getattr(settings, 'WHATSAPP_DISPLAY_NUMBER', '+91 97782 56391'),
+        'whatsapp_business_number': getattr(settings, 'WHATSAPP_DISPLAY_NUMBER', '+91 80753 19502'),
     }
     return render(request, 'products.html', context)
 
@@ -64,7 +64,7 @@ def product_detail_view(request, pk):
     context = {
         'product': product,
         'related_products': related_products,
-        'whatsapp_business_number': getattr(settings, 'WHATSAPP_DISPLAY_NUMBER', '+91 97782 56391'),
+        'whatsapp_business_number': getattr(settings, 'WHATSAPP_DISPLAY_NUMBER', '+91 80753 19502'),
     }
     return render(request, 'product_detail.html', context)
 
@@ -105,6 +105,6 @@ def contact_view(request):
         'form': form,
         'form_submitted': form_submitted,
         'whatsapp_url': whatsapp_url,
-        'whatsapp_business_number': getattr(settings, 'WHATSAPP_DISPLAY_NUMBER', '+91 97782 56391'),
+        'whatsapp_business_number': getattr(settings, 'WHATSAPP_DISPLAY_NUMBER', '+91 80753 19502'),
     }
     return render(request, 'contact.html', context)

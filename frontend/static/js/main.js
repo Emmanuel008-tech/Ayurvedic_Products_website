@@ -105,7 +105,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const messageInput = document.getElementById('id_message');
   const dynamicWaLink = document.getElementById('dynamicWaSubmitLink');
 
-  const bizNumber = '919778256391';
+  const bizNumber = '918075319502';
 
   function updateDynamicWaLink() {
     if (!dynamicWaLink) return;

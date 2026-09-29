@@ -32,7 +32,7 @@ class ProductModelTest(TestCase):
 
     def test_whatsapp_url_generation(self):
         url = self.product.get_whatsapp_url(customer_name="Rohan", customer_phone="9876543210")
-        self.assertIn("https://wa.me/919778256391", url)
+        self.assertIn("https://wa.me/918075319502", url)
         self.assertIn("AyuDhara", url)
         self.assertIn("Test%20Herbal%20Oil", url)
         self.assertIn("Rohan", url)

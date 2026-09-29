@@ -93,7 +93,7 @@ Ayurvedic_Products_website/
 - **Contact & Enquiry (`/contact/`)**: Real-time validation for 10-digit Indian mobile numbers (`^[6-9]\d{9}$`), dynamic message encoding, and immediate feedback banners.
 
 ### 3. WhatsApp Business Integration
-- **Direct Business Line**: `97782 56391` (`+91 97782 56391`).
+- **Direct Business Line**: `80753 19502` (`+91 80753 19502`).
 - Custom URLs generated automatically on `Product` and `Enquiry` models using `get_whatsapp_url()`, pre-populating formulation name, price, category, and customer queries.
 - Official WhatsApp vector badge on buttons.
 
